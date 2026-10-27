@@ -8,6 +8,9 @@ const HU_CENTER = [47.17, 19.45];
 const TILE = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 const ATTRIBUTION = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
 const REPO = 'https://github.com/barnabashub/autopalya';
+// Public address of the site (GitHub Pages). Change it here, in index.html and sitemap.xml for a custom domain.
+const SITE = 'https://barnabashub.github.io/autopalya/';
+const OG_LOCALE = { hu: 'hu_HU', en: 'en_GB', de: 'de_DE', ro: 'ro_RO', sk: 'sk_SK', pl: 'pl_PL', uk: 'uk_UA' };
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -60,6 +63,15 @@ function applyLang(lang) {
   state.t = makeT(lang);
   document.documentElement.lang = lang;
   document.title = state.t('docTitle');
+  // search engines render the page per language URL (?lang=xx), so the head follows the language
+  const url = lang === 'hu' ? SITE : `${SITE}?lang=${lang}`;
+  const setMeta = (sel, attr, value) => { const el = $(sel); if (el) el.setAttribute(attr, value); };
+  setMeta('meta[name="description"]', 'content', state.t('metaDesc'));
+  setMeta('meta[property="og:title"]', 'content', state.t('docTitle'));
+  setMeta('meta[property="og:description"]', 'content', state.t('metaDesc'));
+  setMeta('meta[property="og:url"]', 'content', url);
+  setMeta('meta[property="og:locale"]', 'content', OG_LOCALE[lang]);
+  setMeta('link[rel="canonical"]', 'href', url);
   $$('[data-i18n]').forEach((el) => { el.textContent = state.t(el.dataset.i18n); });
   $$('[data-i18n-title]').forEach((el) => {
     el.title = state.t(el.dataset.i18nTitle);
@@ -910,7 +922,9 @@ async function init() {
     plan();
   });
 
-  applyLang(pickLang(hash.lang || store.get('lang')));
+  // crawlers get the language of the URL (Hungarian without ?lang=), people get their browser language
+  const isBot = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|lighthouse/i.test(navigator.userAgent);
+  applyLang(pickLang(hash.lang || new URLSearchParams(location.search).get('lang') || store.get('lang'), !isBot));
 
   if (hash.from) await setEnd('from', hash.from, { plan: false });
   if (hash.to) await setEnd('to', hash.to, { plan: false });

@@ -48,6 +48,26 @@ Az építés önellenőrzést is végez: összeveti a rendelet szerinti díjköt
 | Címkeresés | Photon (komoot) |
 | Euró-árfolyam | Frankfurter (EKB-árfolyam) |
 
+## Keresőoptimalizálás (SEO)
+
+Minden nyelvnek saját, indexelhető címe van: a magyar a gyökéroldal, a többi `?lang=en`, `?lang=de`, … A `sitemap.xml` és a `hreflang` hivatkozások ezeket kötik össze. A böngésző nyelve szerinti automatikus nyelvválasztás csak embereknek működik; a keresőrobotok mindig az URL nyelvét kapják, így a gyökéroldal magyarul kerül az indexbe.
+
+A fejlécben: nyelvenkénti `<title>` és `description` (`js/i18n.js`: `docTitle`, `metaDesc`), Open Graph / Twitter előnézet (`og-image.jpg`), `WebApplication` strukturált adat (JSON-LD), `canonical`, `robots.txt`, `sitemap.xml`.
+
+**Célzott kulcsszavak**
+
+| Nyelv | Kulcsszavak |
+|---|---|
+| magyar | autópálya matrica, e-matrica, matrica árak 2026, megyei matrica, megyei matrica térkép, melyik megyei matrica kell, napi matrica, 10 napos (heti) matrica, havi matrica, éves matrica, M1 regionális matrica, díjköteles utak térkép, ellenőrző kapuk, matrica kalkulátor |
+| angol | Hungary vignette, Hungary motorway vignette, e-vignette Hungary price 2026, Hungarian toll roads map |
+| német | Vignette Ungarn, Ungarn Vignette Preis 2026, Autobahnvignette Ungarn, Komitatsvignette |
+| román | rovinieta Ungaria, rovinieta Ungaria preț 2026, vigneta Ungaria |
+| szlovák | diaľničná známka Maďarsko, maďarská diaľničná známka cena |
+| lengyel | winieta Węgry, winieta Węgry cena 2026 |
+| ukrán | віньєтка Угорщина, віньєтка Угорщина ціна |
+
+**Saját domain esetén** a `https://barnabashub.github.io/autopalya/` címet itt kell átírni: `index.html` (canonical, hreflang, og:url, og:image, JSON-LD), `js/app.js` (`SITE`), `robots.txt`, `sitemap.xml`. Közzététel után érdemes a webhelyet és a `sitemap.xml`-t beküldeni a Google Search Console-ba és a Bing Webmaster Toolsba.
+
 ## Adatforrások
 
 - Árak, pótdíjak, szabályok: [nemzetiutdij.hu](https://nemzetiutdij.hu/hu/e-matrica/dijak/e-matrica-arak) (2026. január 1-től érvényes díjtáblázat).

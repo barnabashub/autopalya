@@ -39,7 +39,7 @@ jobs:
       - name: Collect site files
         run: |
           mkdir _site
-          cp -r index.html favicon.svg css js vendor _site/
+          cp -r index.html favicon.svg og-image.jpg robots.txt sitemap.xml css js vendor _site/
           mkdir _site/data
           cp data/network.json data/counties.geojson data/prices.json _site/data/
       - uses: actions/configure-pages@v5

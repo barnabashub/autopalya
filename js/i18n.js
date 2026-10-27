@@ -14,7 +14,8 @@ export const LANGS = {
 const S = {
   hu: {
     title: 'Matricatérkép',
-    docTitle: 'Matricatérkép – kell-e autópálya-matrica az utadhoz?',
+    docTitle: 'Autópálya-matrica 2026: kalkulátor és megyei térkép | Matricatérkép',
+    metaDesc: 'Kell autópálya-matrica az utadhoz? Add meg az útvonalat, és kiderül, melyik e-matrica kell: napi, 10 napos, havi, éves vagy megyei. 2026-os árak, térkép.',
     'tab.route': 'Útvonal',
     'tab.prices': 'Árak',
     'tab.guide': 'Tudnivalók',
@@ -131,7 +132,8 @@ const S = {
   },
   en: {
     title: 'Vignette map Hungary',
-    docTitle: 'Vignette map Hungary – do you need a motorway e-vignette?',
+    docTitle: 'Hungary vignette 2026: prices, route check, county map',
+    metaDesc: 'Do you need a motorway vignette in Hungary? Enter your route to see which e-vignette to buy: daily, 10-day, monthly, annual or county. 2026 prices and map.',
     'tab.route': 'Route',
     'tab.prices': 'Prices',
     'tab.guide': 'How it works',
@@ -248,7 +250,8 @@ const S = {
   },
   de: {
     title: 'Vignettenkarte Ungarn',
-    docTitle: 'Vignettenkarte Ungarn – brauchen Sie eine Autobahn-E-Vignette?',
+    docTitle: 'Vignette Ungarn 2026: Preise, Routencheck, Komitatskarte',
+    metaDesc: 'Brauchen Sie eine Vignette für Ungarn? Route eingeben und sehen, welche E-Vignette nötig ist: Tag, 10 Tage, Monat, Jahr oder Komitat. Preise 2026, Karte.',
     'tab.route': 'Route',
     'tab.prices': 'Preise',
     'tab.guide': 'So geht’s',
@@ -365,7 +368,8 @@ const S = {
   },
   ro: {
     title: 'Harta rovinietei Ungaria',
-    docTitle: 'Harta rovinietei Ungaria – ai nevoie de rovinietă pentru autostradă?',
+    docTitle: 'Rovinieta Ungaria 2026: prețuri, verificare traseu, hartă',
+    metaDesc: 'Ai nevoie de rovinietă în Ungaria? Introdu traseul și vezi ce rovinietă electronică trebuie: zilnică, 10 zile, lunară, anuală sau pe comitat. Prețuri 2026.',
     'tab.route': 'Traseu',
     'tab.prices': 'Prețuri',
     'tab.guide': 'Informații',
@@ -482,7 +486,8 @@ const S = {
   },
   sk: {
     title: 'Mapa diaľničných známok Maďarsko',
-    docTitle: 'Mapa diaľničných známok Maďarsko – potrebujete e-známku?',
+    docTitle: 'Diaľničná známka Maďarsko 2026: ceny, trasa, mapa žúp',
+    metaDesc: 'Potrebujete diaľničnú známku do Maďarska? Zadajte trasu a uvidíte, ktorú e-známku kúpiť: dennú, 10-dňovú, mesačnú, ročnú alebo župnú. Ceny 2026.',
     'tab.route': 'Trasa',
     'tab.prices': 'Ceny',
     'tab.guide': 'Informácie',
@@ -599,7 +604,8 @@ const S = {
   },
   pl: {
     title: 'Mapa winiet Węgry',
-    docTitle: 'Mapa winiet Węgry – czy potrzebujesz e-winiety na autostradę?',
+    docTitle: 'Winieta Węgry 2026: ceny, sprawdzenie trasy, mapa komitatów',
+    metaDesc: 'Czy potrzebujesz winiety na Węgrzech? Wpisz trasę i zobacz, którą e-winietę kupić: dzienną, 10-dniową, miesięczną, roczną lub komitatową. Ceny 2026.',
     'tab.route': 'Trasa',
     'tab.prices': 'Ceny',
     'tab.guide': 'Informacje',
@@ -716,7 +722,8 @@ const S = {
   },
   uk: {
     title: 'Карта віньєток Угорщини',
-    docTitle: 'Карта віньєток Угорщини – чи потрібна вам електронна віньєтка?',
+    docTitle: 'Віньєтка Угорщина 2026: ціни, перевірка маршруту, мапа',
+    metaDesc: 'Чи потрібна віньєтка в Угорщині? Введіть маршрут і дізнайтеся, яку е-віньєтку купити: добову, 10-денну, місячну, річну чи на медьє. Ціни 2026.',
     'tab.route': 'Маршрут',
     'tab.prices': 'Ціни',
     'tab.guide': 'Як це працює',
@@ -833,7 +840,9 @@ const S = {
   },
 };
 
-export function pickLang(requested) {
+/** Explicit choice first; then, unless `auto` is off (crawlers), the browser languages; Hungarian otherwise. */
+export function pickLang(requested, auto = true) {
+  if (!auto) return requested && S[requested] ? requested : 'hu';
   const cands = [requested, ...(navigator.languages || [navigator.language || 'hu'])];
   for (const c of cands) {
     if (!c) continue;
