@@ -2,7 +2,7 @@
   "source": "45/2020. (XI. 28.) ITM rendelet 1. melléklet (a 34/2025. (XI. 30.) ÉKM rendelettel megállapított szöveg)",
   "url": "https://njt.hu/jogszabaly/2020-45-20-7Q",
   "retrieved": "2026-10-27",
-  "note": "Egy sor: vármegyei jogosultság, út, kezdő szelvény (km), kezdő csomópont száma, neve, záró szelvény, záró csomópont száma, neve. Az országos jogosultság ezek uniójára érvényes.",
+  "note": "Egy sor: megyei jogosultság, út, kezdő szelvény (km), kezdő csomópont száma, neve, záró szelvény, záró csomópont száma, neve. Az országos jogosultság ezek uniójára érvényes.",
   "rows": [
     ["bacs-kiskun", "M5", 52.680, 53, "Örkény csomópont", 139.300, 140, "Kistelek csomópont"],
     ["bacs-kiskun", "M44", 0.390, 1, "Kecskemét észak / Lajosmizse csomópont", 43.949, 44, "Tiszaug / Tiszakürt csomópont"],

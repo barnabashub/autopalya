@@ -89,6 +89,7 @@ function initMap() {
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', restyleNetwork);
 
   map.createPane('counties').style.zIndex = 350;
+  map.createPane('labels').style.zIndex = 430;
   map.createPane('network').style.zIndex = 420;
   map.createPane('route').style.zIndex = 440;
   map.createPane('gates').style.zIndex = 460;
@@ -126,12 +127,75 @@ function initMap() {
   map.on('zoomend', syncGates);
   syncGates();
 
+  layers.labels = L.layerGroup();
+  for (const f of state.counties.features) {
+    L.marker(labelPoint(f.geometry), {
+      pane: 'labels',
+      interactive: false,
+      keyboard: false,
+      icon: L.divIcon({ className: 'county-label', html: `<span>${countyLabelHtml(f.properties.name)}</span>`, iconSize: [0, 0] }),
+    }).addTo(layers.labels);
+  }
+  map.on('zoomend', syncLabels);
+  syncLabels();
+
   layers.route = L.layerGroup().addTo(map);
   layers.alt = L.layerGroup().addTo(map);
   layers.markers = L.layerGroup().addTo(map);
 
   map.on('click', (e) => openPointPopup(e.latlng));
   map.on('popupclose', () => highlightCounty(null));
+}
+
+// County names are shown while browsing; a planned route takes over the map.
+function syncLabels() {
+  const z = map.getZoom();
+  const show = !state.result && z <= 10.5;
+  if (show) layers.labels.addTo(map); else layers.labels.remove();
+}
+
+function countyLabelHtml(name) {
+  // long double names break after their first hyphen
+  return name.length > 13 ? esc(name).replace('-', '-<br>') : esc(name);
+}
+
+/** A point well inside the county: the grid point farthest from the border of its largest part. */
+function labelPoint(geometry) {
+  const polys = geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates;
+  const area = (ring) => Math.abs(ring.reduce((s, [x1, y1], i) => {
+    const [x2, y2] = ring[(i + 1) % ring.length];
+    return s + x1 * y2 - x2 * y1;
+  }, 0));
+  const poly = polys.reduce((a, b) => (area(b[0]) > area(a[0]) ? b : a));
+  const kx = Math.cos(47.2 * Math.PI / 180);
+  const xs = poly[0].map((c) => c[0]), ys = poly[0].map((c) => c[1]);
+  const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+  const edgeDist = (x, y) => {
+    let best = Infinity;
+    for (const ring of poly) {
+      for (let i = 0; i < ring.length - 1; i++) {
+        const [ax, ay] = ring[i], [bx, by] = ring[i + 1];
+        const dx = (bx - ax) * kx, dy = by - ay;
+        const px = (x - ax) * kx, py = y - ay;
+        const ll = dx * dx + dy * dy;
+        const tt = ll ? Math.max(0, Math.min(1, (px * dx + py * dy) / ll)) : 0;
+        best = Math.min(best, Math.hypot(px - tt * dx, py - tt * dy));
+      }
+    }
+    return best;
+  };
+  let best = null;
+  const n = 24;
+  for (let i = 1; i < n; i++) {
+    for (let j = 1; j < n; j++) {
+      const x = x0 + ((x1 - x0) * i) / n, y = y0 + ((y1 - y0) * j) / n;
+      const p = [y, x];
+      if (!pointInRing(p, poly[0]) || poly.slice(1).some((h) => pointInRing(p, h))) continue;
+      const d = edgeDist(x, y);
+      if (!best || d > best.d) best = { d, p };
+    }
+  }
+  return best ? best.p : [(y0 + y1) / 2, (x0 + x1) / 2];
 }
 
 function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
@@ -447,6 +511,7 @@ function clearResult() {
   layers.route.clearLayers();
   layers.alt.clearLayers();
   $('#result').innerHTML = '';
+  syncLabels();
 }
 
 function showError(msg) {
@@ -485,6 +550,7 @@ async function plan() {
     if (e.name === 'AbortError') return;
     layers.route.clearLayers();
     state.result = null;
+    syncLabels();
     showError(state.t(e instanceof RouteError && e.kind === 'noroute' ? 'errRoute' : 'errNetwork'));
     return;
   }
@@ -511,6 +577,7 @@ async function plan() {
 
 function drawRoute() {
   layers.route.clearLayers();
+  syncLabels();
   const r = state.result;
   if (!r) return;
   L.polyline(r.coords, { pane: 'route', color: '#262b30', weight: 10, opacity: 0.85, interactive: false }).addTo(layers.route);

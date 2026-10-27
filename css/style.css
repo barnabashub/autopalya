@@ -559,6 +559,22 @@ a { color: var(--sign); text-underline-offset: 2px; }
   .legend i { width: 16px; }
 }
 
+.county-label span {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 12.5px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--asphalt);
+  opacity: 0.8;
+  text-shadow: 0 0 3px var(--surface), 0 0 3px var(--surface), 0 0 3px var(--surface), 0 0 2px var(--surface);
+  pointer-events: none;
+}
+
+@media (max-width: 760px) { .county-label span { font-size: 10.5px; } }
+
 .gate-icon svg { width: 16px; height: 14px; display: block; filter: drop-shadow(0 0 1.5px #fff); }
 
 .pin {
