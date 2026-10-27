@@ -1,0 +1,15 @@
+{
+  "year": 2026,
+  "validFrom": "2026-01-01",
+  "currency": "HUF",
+  "source": "https://nemzetiutdij.hu/hu/e-matrica/dijak/e-matrica-arak",
+  "retrieved": "2026-10-27",
+  "categories": {
+    "D1M": { "day": 2770, "week": 3450, "month": 5590, "year": 61760, "county": 7190, "countyBorsod": 2500, "m1Regional": 15000 },
+    "D1": { "day": 5550, "week": 6900, "month": 11170, "year": 61760, "county": 7190, "countyBorsod": 2500, "m1Regional": 15000 },
+    "D2": { "day": 7890, "week": 10040, "month": 15820, "year": 87650, "county": 14370, "countyBorsod": 5000, "m1Regional": 30000 },
+    "U": { "day": 5550, "week": 6900, "month": 11170, "year": 61760, "county": 7190, "countyBorsod": 2500, "m1Regional": 15000 }
+  },
+  "m1RegionalCounties": ["pest", "fejer", "komarom", "gyor"],
+  "surcharge": { "base": 27790, "raised": 95730, "baseDiff": 15530, "raisedDiff": 49190, "source": "https://nemzetiutdij.hu/hu/e-matrica/potdijak/potdij-kulonbozeti-potdij" }
+}

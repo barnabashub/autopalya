@@ -1,0 +1,36 @@
+name: Refresh map data from OpenStreetMap
+
+# Monthly rebuild of data/network.json and data/counties.geojson.
+# The result is proposed as a pull request, so a broken OSM edit never reaches the site unreviewed.
+on:
+  schedule:
+    - cron: '17 3 2 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Download OSM data and rebuild
+        run: python3 tools/build_data.py all
+      - name: Test
+        run: npm test
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: data/osm-refresh
+          commit-message: 'Térképadatok frissítése OpenStreetMapből'
+          title: 'Térképadatok frissítése OpenStreetMapből'
+          body: |
+            Automatikus havi frissítés: `python3 tools/build_data.py all`.
+            Ellenőrizd a workflow naplójában az OSM díjköteles címkéktől való eltéréseket (`~` sorok).
+          add-paths: |
+            data/network.json
+            data/counties.geojson
